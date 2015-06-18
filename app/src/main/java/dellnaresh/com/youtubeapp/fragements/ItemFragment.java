@@ -10,9 +10,13 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import java.util.ArrayList;
 
 import dellnaresh.com.youtubeapp.R;
 
@@ -79,8 +83,9 @@ public class ItemFragment extends ListFragment implements AbsListView.OnItemClic
         }
 
         // TODO: Change Adapter to display your title
-        mAdapter = new ArrayAdapter<VideoContent.Video>(getActivity(),
-                android.R.layout.simple_list_item_1, android.R.id.text1, VideoContent.videos);
+//        mAdapter = new ArrayAdapter<VideoContent.Video>(getActivity(),
+//                android.R.layout.simple_list_item_1, android.R.id.text1, VideoContent.videos);
+        VideoAdapter videoAdapter=new VideoAdapter(VideoContent.videos);
         setListAdapter(mAdapter);
     }
 
@@ -127,7 +132,7 @@ public class ItemFragment extends ListFragment implements AbsListView.OnItemClic
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
-        VideoContent.Video c = (VideoContent.Video)(getListAdapter()).getItem(position);
+        VideoContent.Video c = ((VideoAdapter)getListAdapter()).getItem(position);
         Log.d(TAG, c.getTitle() + " was clicked");
     }
 
@@ -157,6 +162,25 @@ public class ItemFragment extends ListFragment implements AbsListView.OnItemClic
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         public void onFragmentInteraction(String id);
+    }
+    private class VideoAdapter extends ArrayAdapter<VideoContent.Video>{
+        public VideoAdapter(ArrayList<VideoContent.Video> videos) {
+            super(getActivity(), 0, videos);
+        }
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+          // If we weren't given a view, inflate one
+            if (convertView == null) {
+                convertView = getActivity().getLayoutInflater()
+                        .inflate(R.layout.list_search_videos, null);
+            }
+            VideoContent.Video video=getItem(position);
+            TextView date= (TextView) convertView.findViewById(R.id.search_result_date);
+            TextView title= (TextView) convertView.findViewById(R.id.search_result_title);
+            ImageView image= (ImageView) convertView.findViewById(R.id.search_result_image);
+            ProgressBar progressBar= (ProgressBar) convertView.findViewById(R.id.search_result_progress);
+           return convertView;
+        }
     }
 
 }
